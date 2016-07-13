@@ -12,26 +12,30 @@ function FitbitApiClient(clientID, clientSecret) {
         useBasicAuthorizationHeader: true
     });
 }
+var missingAuthParamsErrorMsg = "One of (code, redirect_uri) missing in options";
 
 FitbitApiClient.prototype = {
     getAuthorizeUrl: function (options) {
-        return this.oauth2.authCode.authorizeURL(options).replace('api', 'www');
+        if (options.code === undefined || options.redirect_uri === undefined){
+            throw new Error(missingAuthParamsErrorMsg);
+        }else{
+            return this.oauth2.authCode.authorizeURL(options).replace('api', 'www');
+        }
     },
 
-    getAccessToken: function (code, redirectUrl) {
+    getAccessToken: function (options) {
         var deferred = Q.defer();
-          
-        this.oauth2.authCode.getToken({
-            code: code,
-            redirect_uri: redirectUrl
-        }, function (error, result) {
-            if (error) {
-                deferred.reject(error);
-            } else {
-                deferred.resolve(result);
-            }
-        });
-        
+        if (options.code === undefined || options.redirect_uri === undefined){
+            deferred.reject(missingAuthParamsErrorMsg);
+        }else{
+            this.oauth2.authCode.getToken(options, function (error, result) {
+                if (error) {
+                    deferred.reject(error);
+                } else {
+                    deferred.resolve(result);
+                }
+            });
+        }
         return deferred.promise;
     },
     
