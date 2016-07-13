@@ -41,22 +41,40 @@ FitbitApiClient.prototype = {
     },
 
     revokeTokens: function(tokens){
+        var deferred = Q.defer();
         var token = this.oauth2.accessToken.create(tokens);
-        return token.revoke('access_token')
+        token.revoke('access_token')
         .then(function revokeRefresh() {
             // Revoke the refresh token
-            return token.revoke('refresh_token');
+            return token.revoke('refresh_token').then(function(res){
+                deferred.resolve(res);
+            });
+        }).catch(function(err){
+            deferred.reject(err);
         });
+        return deferred.promise;
     },
 
     revokeAccessToken: function(tokens){
+        var deferred = Q.defer();
         var token = this.oauth2.accessToken.create(tokens);
-        return token.revoke('access_token');
+        token.revoke('access_token').then(function(res){
+            deferred.resolve(res);
+        }).catch(function(err){
+            deferred.reject(err);
+        });
+        return deferred.promise;
     },
 
     revokeRefreshToken: function(tokens){
+        var deferred = Q.defer();
         var token = this.oauth2.accessToken.create(tokens);
-        return token.revoke('refresh_token');
+        token.revoke('refresh_token').then(function(res){
+            deferred.resolve(res);
+        }).catch(function(err){
+            deferred.reject(err);
+        });
+        return deferred.promise;
     },
     
     refreshAccessToken: function (accessToken, refreshToken) {
