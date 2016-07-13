@@ -38,6 +38,25 @@ FitbitApiClient.prototype = {
         }
         return deferred.promise;
     },
+
+    revokeTokens: function(tokens){
+        var token = this.oauth2.token.create(tokens);
+        return token.revoke('access_token')
+        .then(function revokeRefresh() {
+            // Revoke the refresh token
+            return token.revoke('refresh_token');
+        });
+    },
+
+    revokeAccessToken: function(tokens){
+        var token = this.oauth2.token.create(tokens);
+        return token.revoke('access_token');
+    },
+
+    revokeRefreshToken: function(tokens){
+        var token = this.oauth2.token.create(tokens);
+        return token.revoke('refresh_token');
+    },
     
     refreshAccessToken: function (accessToken, refreshToken) {
         var deferred = Q.defer();
