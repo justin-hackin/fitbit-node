@@ -17,7 +17,7 @@ Construct the authorization URL. This is the first step of the OAuth 2.0 flow. R
 #### `getAccessToken(code, redirectUrl)`
 After the user authorizes with Fitbit, he/she will be forwarded to the `redirectUrl` you specified when calling `getAuthorizationUrl()`, and the `code` will be present in the URL. Use this to exchange the authorization code for an access token in order to make API calls. Returns a promise.
 
-#### `refreshAccesstoken(refreshToken)`
+#### `refreshAccessToken(refreshToken)`
 Refresh the user's access token, in the event that it has expired. The `refreshToken` would have been returned as `refresh_token` alongside the `access_token` by the `getAccessToken()` method. Returns a promise.
 
 #### `get(path, accessToken, [userId])`

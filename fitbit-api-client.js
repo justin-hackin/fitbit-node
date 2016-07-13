@@ -35,7 +35,7 @@ FitbitApiClient.prototype = {
         return deferred.promise;
     },
     
-    refreshAccesstoken: function (accessToken, refreshToken) {
+    refreshAccessToken: function (accessToken, refreshToken) {
         var deferred = Q.defer();
           
         var token = this.oauth2.accessToken.create({
