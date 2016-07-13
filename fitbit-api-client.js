@@ -12,11 +12,11 @@ function FitbitApiClient(clientID, clientSecret) {
         useBasicAuthorizationHeader: true
     });
 }
-var missingAuthParamsErrorMsg = "One of (code, redirect_uri) missing in options";
 
 FitbitApiClient.prototype = {
     getAuthorizeUrl: function (options) {
-        if (options.code === undefined || options.redirect_uri === undefined){
+        var missingAuthParamsErrorMsg = "One of (scope, redirect_uri) missing in options";
+        if (options.redirect_uri === undefined || options.scope === undefined){
             throw new Error(missingAuthParamsErrorMsg);
         }else{
             return this.oauth2.authCode.authorizeURL(options).replace('api', 'www');
@@ -25,6 +25,7 @@ FitbitApiClient.prototype = {
 
     getAccessToken: function (options) {
         var deferred = Q.defer();
+        var missingAuthParamsErrorMsg = "One of (code, redirect_uri) missing in options";
         if (options.code === undefined || options.redirect_uri === undefined){
             deferred.reject(missingAuthParamsErrorMsg);
         }else{
@@ -40,7 +41,7 @@ FitbitApiClient.prototype = {
     },
 
     revokeTokens: function(tokens){
-        var token = this.oauth2.token.create(tokens);
+        var token = this.oauth2.accessToken.create(tokens);
         return token.revoke('access_token')
         .then(function revokeRefresh() {
             // Revoke the refresh token
@@ -49,12 +50,12 @@ FitbitApiClient.prototype = {
     },
 
     revokeAccessToken: function(tokens){
-        var token = this.oauth2.token.create(tokens);
+        var token = this.oauth2.accessToken.create(tokens);
         return token.revoke('access_token');
     },
 
     revokeRefreshToken: function(tokens){
-        var token = this.oauth2.token.create(tokens);
+        var token = this.oauth2.accessToken.create(tokens);
         return token.revoke('refresh_token');
     },
     
